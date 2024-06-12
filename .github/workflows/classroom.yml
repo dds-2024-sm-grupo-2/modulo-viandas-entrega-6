@@ -75,7 +75,7 @@ jobs:
         with:
           test-name: EvaluatorAPI
           setup-command: mvn clean compile
-          command: mvn exec:java -Dexec.mainClass="ar.edu.utn.dds.k3003.EvaluadorAPI" -Dexec.args="http://localhost:8080 vianda"
+          command: mvn exec:java -Dexec.mainClass="ar.edu.utn.dds.k3003.EvaluadorAPI" -Dexec.args="http://localhost:8080 ${{ env.EVALUATOR_API_ARG }}"
           timeout: 10
           max-score: 1
 
