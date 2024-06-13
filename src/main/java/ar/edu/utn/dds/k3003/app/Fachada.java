@@ -20,12 +20,12 @@ public class Fachada implements ar.edu.utn.dds.k3003.facades.FachadaViandas {
     private final ViandaMapper viandaMapper;
     private final ViandaRepository viandaRepository;
     private FachadaHeladeras heladerasProxy;
-    public Fachada(EntityManagerFactory entityManagerFactory){
-        this.entityManagerFactory = entityManagerFactory;
+    public Fachada() {
         this.viandaRepository = new ViandaRepository();
         this.viandaMapper = new ViandaMapper();
     }
-    public Fachada() {
+    public Fachada(EntityManagerFactory entityManagerFactory){
+        this.entityManagerFactory = entityManagerFactory;
         this.viandaRepository = new ViandaRepository();
         this.viandaMapper = new ViandaMapper();
     }
