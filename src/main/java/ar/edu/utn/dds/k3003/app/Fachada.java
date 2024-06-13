@@ -8,14 +8,23 @@ import ar.edu.utn.dds.k3003.model.Vianda;
 import ar.edu.utn.dds.k3003.repositories.ViandaMapper;
 import ar.edu.utn.dds.k3003.repositories.ViandaRepository;
 
+import javax.persistence.EntityManager;
+import javax.persistence.EntityManagerFactory;
+import javax.persistence.EntityTransaction;
+import javax.persistence.TypedQuery;
 import java.time.LocalDateTime;
 import java.util.*;
 
 public class Fachada implements ar.edu.utn.dds.k3003.facades.FachadaViandas {
+    private EntityManagerFactory entityManagerFactory;
     private final ViandaMapper viandaMapper;
     private final ViandaRepository viandaRepository;
     private FachadaHeladeras heladerasProxy;
-
+    public Fachada(EntityManagerFactory entityManagerFactory){
+        this.entityManagerFactory = entityManagerFactory;
+        this.viandaRepository = new ViandaRepository();
+        this.viandaMapper = new ViandaMapper();
+    }
     public Fachada() {
         this.viandaRepository = new ViandaRepository();
         this.viandaMapper = new ViandaMapper();
@@ -23,45 +32,65 @@ public class Fachada implements ar.edu.utn.dds.k3003.facades.FachadaViandas {
 
     @Override
     public ViandaDTO agregar(ViandaDTO viandaDTO) {
+        EntityManager entityManager = entityManagerFactory.createEntityManager();
+        viandaRepository.setEntityManager(entityManager);
+        viandaRepository.getEntityManager().getTransaction().begin();
         Vianda vianda = new Vianda(viandaDTO.getCodigoQR(), viandaDTO.getFechaElaboracion(), viandaDTO.getEstado(), viandaDTO.getColaboradorId(), viandaDTO.getHeladeraId());
         vianda = this.viandaRepository.save(vianda);
+        viandaRepository.getEntityManager().getTransaction().commit();
+        viandaRepository.getEntityManager().close();
         return viandaMapper.map(vianda);
     }
 
     @Override
     public ViandaDTO modificarEstado(String qr, EstadoViandaEnum nuevoEstado) {
+        EntityManager entityManager = entityManagerFactory.createEntityManager();
+        viandaRepository.setEntityManager(entityManager);
+        viandaRepository.getEntityManager().getTransaction().begin();
         Vianda vianda = viandaRepository.findByQR(qr);
         if (vianda != null) {
             vianda.setEstado(nuevoEstado);
             viandaRepository.save(vianda);
+            entityManager.getTransaction().commit();
+            entityManager.close();
             return viandaMapper.map(vianda);
         } else {
+            entityManager.getTransaction().rollback();
+            entityManager.close();
             throw new IllegalArgumentException("No se encontró la vianda con el código QR.");
         }
     }
     @Override
     public List<ViandaDTO> viandasDeColaborador(Long colaboradorId, Integer mes, Integer anio) throws NoSuchElementException {
-        List<ViandaDTO> viandasDeColaborador = new ArrayList<>();
+        EntityManager entityManager = entityManagerFactory.createEntityManager();
+        viandaRepository.setEntityManager(entityManager);
+        TypedQuery<Vianda> query = entityManager.createQuery(
+                "SELECT v FROM Vianda v WHERE v.colaboradorId = :colaboradorId AND FUNCTION('MONTH', v.fechaElaboracion) = :mes AND FUNCTION('YEAR', v.fechaElaboracion) = :anio",
+                Vianda.class
+        );
+        query.setParameter("colaboradorId", colaboradorId);
+        query.setParameter("mes", mes);
+        query.setParameter("anio", anio);
+        List<Vianda> viandas = query.getResultList();
+        entityManager.close();
 
-        for (Vianda vianda : this.viandaRepository.getViandas()) {
-            LocalDateTime fechaVianda = vianda.getFechaElaboracion();
-            if (vianda.getColaboradorId().equals(colaboradorId) &&
-                    fechaVianda.getMonthValue() == mes &&
-                    fechaVianda.getYear() == anio) {
-                viandasDeColaborador.add(viandaMapper.map(vianda));
-            }
+        if (viandas.isEmpty()) {
+            throw new NoSuchElementException("No se encontraron viandas para el colaborador y fecha especificados.");
         }
 
-        if (viandasDeColaborador.isEmpty()) {
-            throw new NoSuchElementException("No se encontraron viandas para el colaborador y fecha especificados.");
+        List<ViandaDTO> viandasDeColaborador = new ArrayList<>();
+        for (Vianda vianda : viandas) {
+            viandasDeColaborador.add(viandaMapper.map(vianda));
         }
 
         return viandasDeColaborador;
     }
-
     @Override
     public ViandaDTO buscarXQR(String qr) {
+        EntityManager entityManager = entityManagerFactory.createEntityManager();
+        viandaRepository.setEntityManager(entityManager);
         Vianda vianda = viandaRepository.findByQR(qr);
+        entityManager.close();
         if (vianda != null) {
             return viandaMapper.map(vianda);
         } else {
@@ -92,15 +121,23 @@ public class Fachada implements ar.edu.utn.dds.k3003.facades.FachadaViandas {
         return vencida;
     }
 
-
     @Override
     public ViandaDTO modificarHeladera(String codigoQR, int nuevoIdHeladera) {
+        EntityManager entityManager = entityManagerFactory.createEntityManager();
+        viandaRepository.setEntityManager(entityManager);
+        entityManager.getTransaction().begin();
         Vianda vianda = viandaRepository.findByQR(codigoQR);
         if (vianda == null) {
+            entityManager.getTransaction().rollback();
+            entityManager.close();
             throw new NoSuchElementException("No se encontró una vianda con el código QR especificado.");
         }
         vianda.setHeladeraId(nuevoIdHeladera);
+        viandaRepository.save(vianda);
+        entityManager.getTransaction().commit();
+        entityManager.close();
         return viandaMapper.map(vianda);
     }
+
 }
 

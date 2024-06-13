@@ -27,6 +27,7 @@ public class PersistenceIT {
     public void setup() throws Exception {
         entityManager = entityManagerFactory.createEntityManager();
     }
+
     @Test
     public void testConectar() {
 // vacío, para ver que levante el ORM
@@ -35,11 +36,12 @@ public class PersistenceIT {
     @Test
     public void testGuardarYRecuperarVianda() throws Exception {
         Vianda vianda1 = new Vianda();
-        vianda1.setCodigoQR("ABC123");
+        vianda1.setCodigoQR("ABC12223"); //NO PUEDE SER EL MISMO
         vianda1.setFechaElaboracion(LocalDateTime.now());
-        vianda1.setEstado(EstadoViandaEnum.PREPARADA);
+        vianda1.setEstado(EstadoViandaEnum.EN_TRASLADO);
         vianda1.setColaboradorId(1L);
         vianda1.setHeladeraId(101);
+
 
         entityManager.getTransaction().begin();
         entityManager.persist(vianda1);
@@ -55,5 +57,7 @@ public class PersistenceIT {
         assertEquals(vianda1.getCodigoQR(), vianda2.getCodigoQR());
     }
 
-
 }
+
+
+
