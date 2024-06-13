@@ -72,7 +72,7 @@ public class WebApp {
                 configOverrides.put(key, value);
             }
         }
-        entityManagerFactory = Persistence.createEntityManagerFactory("TPDDS", configOverrides);
+        entityManagerFactory = Persistence.createEntityManagerFactory("db", configOverrides);
     }
 }
 
