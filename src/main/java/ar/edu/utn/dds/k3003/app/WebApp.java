@@ -8,12 +8,18 @@ import com.fasterxml.jackson.databind.DeserializationFeature;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.SerializationFeature;
 import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
+
+import javax.persistence.EntityManager;
+import javax.persistence.EntityManagerFactory;
+import javax.persistence.Persistence;
 import java.text.SimpleDateFormat;
+import java.util.HashMap;
 import java.util.Locale;
+import java.util.Map;
 import java.util.TimeZone;
 
 public class WebApp {
-
+    public static EntityManagerFactory entityManagerFactory;
     public static void main(String[] args) {
 
         var env = System.getenv();
@@ -24,6 +30,8 @@ public class WebApp {
         var URL_COLABORADORES = env.get("URL_COLABORADORES");
         var URL_LOGISTICA = env.get("URL_LOGISTICA");
 
+        startEntityManagerFactory(env);
+        EntityManager entityManager = entityManagerFactory.createEntityManager();
 
         var objectMapper = createObjectMapper();
         var fachada = new Fachada();
@@ -58,6 +66,21 @@ public class WebApp {
         objectMapper.setDateFormat(sdf);
         return objectMapper;
     }
+
+    public static void startEntityManagerFactory(Map<String, String> env) {
+        // https://stackoverflow.com/questions/8836834/read-environment-variables-in-persistence-xml-file
+        Map<String, Object> configOverrides = new HashMap<String, Object>();
+        String[] keys = new String[] { "javax.persistence.jdbc.url", "javax.persistence.jdbc.user",
+                "javax.persistence.jdbc.driver"};
+        for (String key : keys) {
+            if (env.containsKey(key)) {
+                String value = env.get(key);
+                configOverrides.put(key, value);
+            }
+        }
+        entityManagerFactory = Persistence.createEntityManagerFactory("db", configOverrides);
+    }
+
 }
 
 //para probar en postman
