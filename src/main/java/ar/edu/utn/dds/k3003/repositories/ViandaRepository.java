@@ -60,7 +60,6 @@ import lombok.Getter;
 import lombok.Setter;
 
 import javax.persistence.EntityManager;
-import javax.persistence.EntityManagerFactory;
 import javax.persistence.EntityTransaction;
 import javax.persistence.TypedQuery;
 import java.util.List;
@@ -108,18 +107,13 @@ public class ViandaRepository {
     }
 
 
-
-
-    public void update(Vianda vianda) {
+    public Vianda update(Vianda vianda) {
         EntityTransaction transaction = entityManager.getTransaction();
         try {
             transaction.begin();
             Vianda existingVianda = entityManager.find(Vianda.class, vianda.getId());
             if (existingVianda != null) {
-                existingVianda.setColaboradorId(vianda.getColaboradorId());
                 existingVianda.setHeladeraId(vianda.getHeladeraId());
-                existingVianda.setEstado(vianda.getEstado());
-                existingVianda.setFechaElaboracion(vianda.getFechaElaboracion());
                 entityManager.merge(existingVianda);
             } else {
                 throw new NoSuchElementException("No se encontró la vianda a actualizar");
@@ -129,6 +123,7 @@ public class ViandaRepository {
             transaction.rollback();
             throw e;
         }
+        return vianda;
     }
 
     public void borrarTodo() {

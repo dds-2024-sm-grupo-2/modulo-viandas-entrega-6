@@ -107,7 +107,11 @@ public class Fachada implements ar.edu.utn.dds.k3003.facades.FachadaViandas {
             throw new NoSuchElementException("No se encontró una vianda con el código QR especificado.");
         }
         vianda.setHeladeraId(nuevoIdHeladera);
+        Vianda viandaActualizada = viandaRepository.update(vianda);
+
         return viandaMapper.map(vianda);
     }
+
+
 }
 

@@ -50,7 +50,7 @@ public class WebApp {
         app.post("/viandas", viandaController::agregar);
         app.get("/viandas/{qr}", viandaController::obtenerqr);
         app.get("/viandas/{qr}/vencida", viandaController::obtenervencida);
-        app.patch("/viandas/{qr}",viandaController::modificarhl); //sigue sin guardarla sin persistir
+        app.patch("/viandas/{qr}",viandaController::modificarhl); 
         app.get("/viandas/search/findByColaboradorIdAndAnioAndMes", viandaController::obtenerviancolab);
         app.delete("/viandas", viandaController::eliminar);
 
