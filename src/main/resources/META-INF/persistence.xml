@@ -23,8 +23,6 @@
             <property name="hibernate.format_sql" value="true" />
             <property name="use_sql_comments" value="true" />
             <property name="hibernate.dialect" value="org.hibernate.dialect.PostgreSQL95Dialect"/> <!-- DB Dialect -->
-
-
         </properties>
 
     </persistence-unit>
