@@ -16,7 +16,7 @@
             <property name="javax.persistence.jdbc.url" value="jdbc:postgresql://dpg-cplmjqrgbbvc738r3v30-a.oregon-postgres.render.com:5432/viandas"/>
 
             <property name="hibernate.default_schema" value="public"/>
-            <property name="hibernate.hbm2ddl.auto" value="update"/>
+            <property name="hibernate.hbm2ddl.auto" value="create"/>
             <property name="hibernate.connection.pool_size" value="10" />
             <property name="hibernate.archive.autodetection" value="class" />
             <property name="hibernate.show_sql" value="true" />

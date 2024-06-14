@@ -56,6 +56,8 @@
 package ar.edu.utn.dds.k3003.repositories;
 
 import ar.edu.utn.dds.k3003.model.Vianda;
+import lombok.Getter;
+import lombok.Setter;
 
 import javax.persistence.EntityManager;
 import javax.persistence.EntityManagerFactory;
@@ -65,50 +67,25 @@ import java.util.List;
 import java.util.NoSuchElementException;
 import java.util.Objects;
 
+@Setter
+@Getter
 public class ViandaRepository {
-    public void setEntityManager(EntityManager entityManager) {
-    this.entityManager = entityManager;
-}
-    public EntityManager getEntityManager() {
-        return entityManager;
-    }
-    private EntityManager entityManager;
+    private final EntityManager entityManager;
 
-    public ViandaRepository(EntityManagerFactory entityManagerFactory) {
-        this.entityManager = entityManagerFactory.createEntityManager();
-    }
-    public ViandaRepository(){
+    public ViandaRepository(EntityManager entityManager) {
+        this.entityManager = entityManager;
     }
 
-public Vianda save(Vianda vianda) {
-    EntityTransaction transaction = entityManager.getTransaction();
-    boolean isNewTransaction = false;
+    public Vianda save(Vianda vianda) throws NoSuchElementException {
 
-    try {
-        if (!transaction.isActive()) {
-            transaction.begin();
-            isNewTransaction = true;
-        }
-
-        if (vianda.getId() == null) {
+        if (Objects.isNull(vianda.getId())) {
+            entityManager.getTransaction().begin();
             entityManager.persist(vianda);
-        } else {
-            entityManager.merge(vianda);
-        }
-
-        if (isNewTransaction) {
-            transaction.commit();
+            entityManager.getTransaction().commit();
         }
 
         return vianda;
-    } catch (Exception e) {
-        if (isNewTransaction && transaction.isActive()) {
-            transaction.rollback();
-        }
-        throw e;
     }
-}
-
 
     public Vianda findByQR(String qr) {
         TypedQuery<Vianda> query = entityManager.createQuery("SELECT v FROM Vianda v WHERE v.codigoQR = :qr", Vianda.class);
@@ -130,6 +107,9 @@ public Vianda save(Vianda vianda) {
         return vianda;
     }
 
+
+
+
     public void update(Vianda vianda) {
         EntityTransaction transaction = entityManager.getTransaction();
         try {
@@ -147,6 +127,17 @@ public Vianda save(Vianda vianda) {
             transaction.commit();
         } catch (Exception e) {
             transaction.rollback();
+            throw e;
+        }
+    }
+
+    public void borrarTodo() {
+        entityManager.getTransaction().begin();
+        try {
+            int deletedCount = entityManager.createQuery("DELETE FROM Vianda").executeUpdate();
+            entityManager.getTransaction().commit();
+        } catch (Exception e) {
+            entityManager.getTransaction().rollback();
             throw e;
         }
     }
