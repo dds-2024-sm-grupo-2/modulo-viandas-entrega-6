@@ -91,14 +91,15 @@ public class Fachada implements ar.edu.utn.dds.k3003.facades.FachadaViandas {
         }
         List<TemperaturaDTO> temperaturas = heladerasProxy.obtenerTemperaturas(vianda.getHeladeraId());
 
-        boolean vencida = false;
-        for (TemperaturaDTO temperatura : temperaturas) {
-            if (temperatura.getTemperatura() > 4) {
-                vencida = true;
-                break;
-            }
-        }
-        return vencida;
+//        boolean vencida = false;
+//        for (TemperaturaDTO temperatura : temperaturas) {
+//            if (temperatura.getTemperatura() > 4) {
+//                vencida = true;
+//                break;
+//            }
+//        }
+//        return vencida;
+        return temperaturas.stream().anyMatch(temperatura -> temperatura.getTemperatura() > 4);
     }
 
 
