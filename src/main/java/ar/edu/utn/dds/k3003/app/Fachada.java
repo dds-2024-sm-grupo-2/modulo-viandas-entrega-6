@@ -34,7 +34,7 @@ public class Fachada implements ar.edu.utn.dds.k3003.facades.FachadaViandas {
 //        vianda = this.viandaRepository.save(vianda);
 //        return viandaMapper.map(vianda);
 //    }
-    
+
     public ViandaDTO agregar(ViandaDTO viandaDTO) {
         // Verificar si el código QR ya existe
         Optional<Vianda> existingVianda = Optional.ofNullable(viandaRepository.findByQR(viandaDTO.getCodigoQR()));
