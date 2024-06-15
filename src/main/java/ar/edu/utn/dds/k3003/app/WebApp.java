@@ -25,10 +25,10 @@ public class WebApp {
         var env = System.getenv();
 
         // Variables de entorno
-        var URL_VIANDAS = env.get("URL_VIANDAS");
-        var URL_HELADERAS = env.get("URL_HELADERAS");
-        var URL_COLABORADORES = env.get("URL_COLABORADORES");
-        var URL_LOGISTICA = env.get("URL_LOGISTICA");
+//        var URL_VIANDAS = env.get("URL_VIANDAS");
+//        var URL_HELADERAS = env.get("URL_HELADERAS");
+//        var URL_COLABORADORES = env.get("URL_COLABORADORES");
+//        var URL_LOGISTICA = env.get("URL_LOGISTICA");
 
 //        startEntityManagerFactory(env);
 //        EntityManager entityManager = entityManagerFactory.createEntityManager();
