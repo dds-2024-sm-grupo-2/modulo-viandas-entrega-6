@@ -99,6 +99,7 @@ public class Fachada implements ar.edu.utn.dds.k3003.facades.FachadaViandas {
 //            }
 //        }
 //        return vencida;
+        System.out.println(temperaturas.stream().map(temperaturaDTO -> temperaturaDTO.getTemperatura()));
         return temperaturas.stream().anyMatch(temperatura -> temperatura.getTemperatura() > 4);
     }
 
