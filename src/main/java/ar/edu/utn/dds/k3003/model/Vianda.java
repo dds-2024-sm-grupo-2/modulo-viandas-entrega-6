@@ -19,20 +19,20 @@ public class Vianda {
     @GeneratedValue(strategy = GenerationType.IDENTITY) // Para generación automática de IDs
     private Long id;
 
-    @Column(name = "codigo_qr", nullable = false, unique = true)
+    @Column(name = "codigo_qr")
     private String codigoQR;
 
-    @Column(name = "fecha_elaboracion", nullable = false)
+    @Column(name = "fecha_elaboracion")
     private LocalDateTime fechaElaboracion;
 
     @Enumerated(EnumType.STRING)
-    @Column(name = "estado", nullable = false)
+    @Column(name = "estado")
     private EstadoViandaEnum estado;
 
-    @Column(name = "colaborador_id", nullable = false)
+    @Column(name = "colaborador_id")
     private Long colaboradorId;
 
-    @Column(name = "heladera_id", nullable = false)
+    @Column(name = "heladera_id")
     private Integer heladeraId;
 
 

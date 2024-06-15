@@ -85,18 +85,6 @@ public class ViandaRepository {
 
         return vianda;
     }
-//    public Vianda save(Vianda vianda) throws NoSuchElementException {
-//        if (Objects.isNull(vianda.getId())) {
-//            entityManager.getTransaction().begin();
-//            entityManager.persist(vianda);
-//            entityManager.getTransaction().commit();
-//        } else {
-//            entityManager.getTransaction().begin();
-//            entityManager.merge(vianda);
-//            entityManager.getTransaction().commit();
-//        }
-//        return vianda;
-//    }
 
     public Vianda findByQR(String qr) {
         TypedQuery<Vianda> query = entityManager.createQuery("SELECT v FROM Vianda v WHERE v.codigoQR = :qr", Vianda.class);
