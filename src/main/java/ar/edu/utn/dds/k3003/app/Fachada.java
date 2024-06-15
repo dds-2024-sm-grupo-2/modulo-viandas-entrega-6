@@ -28,24 +28,24 @@ public class Fachada implements ar.edu.utn.dds.k3003.facades.FachadaViandas {
         this.viandaMapper = new ViandaMapper();
     }
 
-//    @Override
-//    public ViandaDTO agregar(ViandaDTO viandaDTO) {
-//        Vianda vianda = new Vianda(viandaDTO.getCodigoQR(), viandaDTO.getFechaElaboracion(), viandaDTO.getEstado(), viandaDTO.getColaboradorId(), viandaDTO.getHeladeraId());
-//        vianda = this.viandaRepository.save(vianda);
-//        return viandaMapper.map(vianda);
-//    }
-
+    @Override
     public ViandaDTO agregar(ViandaDTO viandaDTO) {
-        // Verificar si el código QR ya existe
-        Optional<Vianda> existingVianda = Optional.ofNullable(viandaRepository.findByQR(viandaDTO.getCodigoQR()));
-        if (existingVianda.isPresent()) {
-            throw new IllegalArgumentException("El código QR ya existe.");
-        }
-
         Vianda vianda = new Vianda(viandaDTO.getCodigoQR(), viandaDTO.getFechaElaboracion(), viandaDTO.getEstado(), viandaDTO.getColaboradorId(), viandaDTO.getHeladeraId());
         vianda = this.viandaRepository.save(vianda);
         return viandaMapper.map(vianda);
     }
+
+//    public ViandaDTO agregar(ViandaDTO viandaDTO) {
+//        // Verificar si el código QR ya existe
+//        Optional<Vianda> existingVianda = Optional.ofNullable(viandaRepository.findByQR(viandaDTO.getCodigoQR()));
+//        if (existingVianda.isPresent()) {
+//            throw new IllegalArgumentException("El código QR ya existe.");
+//        }
+//
+//        Vianda vianda = new Vianda(viandaDTO.getCodigoQR(), viandaDTO.getFechaElaboracion(), viandaDTO.getEstado(), viandaDTO.getColaboradorId(), viandaDTO.getHeladeraId());
+//        vianda = this.viandaRepository.save(vianda);
+//        return viandaMapper.map(vianda);
+//    }
     @Override
     public ViandaDTO modificarEstado(String qr, EstadoViandaEnum nuevoEstado) {
         Vianda vianda = viandaRepository.findByQR(qr);
