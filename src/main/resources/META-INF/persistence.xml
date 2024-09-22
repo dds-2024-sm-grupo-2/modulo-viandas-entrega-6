@@ -11,9 +11,9 @@
 
         <properties>
             <property name="javax.persistence.jdbc.user" value="manuverger"/>
-            <property name="javax.persistence.jdbc.password" value="hdYyrZHCNwUQ9u6DmehFHQqWGMMhYTvv" />
+            <property name="javax.persistence.jdbc.password" value="D0J31IYOUvFyw2rw6p4E1h8kOTxwqvJC" />
             <property name="javax.persistence.jdbc.driver" value="org.postgresql.Driver"/>
-            <property name="javax.persistence.jdbc.url" value="jdbc:postgresql://dpg-cplmjqrgbbvc738r3v30-a.oregon-postgres.render.com:5432/viandas"/>
+            <property name="javax.persistence.jdbc.url" value="jdbc:postgresql://dpg-cro8adu8ii6s73f44mo0-a.oregon-postgres.render.com:5432/viandas_qpal"/>
 
             <property name="hibernate.default_schema" value="public"/>
             <property name="hibernate.hbm2ddl.auto" value="create"/>
