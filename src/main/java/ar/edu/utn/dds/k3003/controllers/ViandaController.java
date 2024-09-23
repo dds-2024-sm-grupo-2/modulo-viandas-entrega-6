@@ -48,7 +48,7 @@ public class ViandaController {
             boolean viandaVencida = fachada.evaluarVencimiento(qr);
             if (viandaVencida == Boolean.TRUE) {
             ViandaDTO vianda = fachada.modificarEstado(qr, EstadoViandaEnum.VENCIDA);
-            resultado.put("resultado", vianda);
+            resultado.put("resultado", viandaVencida);
             ctx.result(resultado.toString()).contentType("application/json");
             }
         } catch (NoSuchElementException e) {

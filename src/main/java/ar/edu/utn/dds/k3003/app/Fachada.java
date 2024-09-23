@@ -41,6 +41,7 @@ public class Fachada implements ar.edu.utn.dds.k3003.facades.FachadaViandas {
         Vianda vianda = viandaRepository.findByQR(qr);
         vianda.setEstado(nuevoEstado);
         viandaRepository.save(vianda);
+        viandaRepository.actualizar(vianda);
         return viandaMapper.map(vianda);
 /**        if (vianda != null) {
             vianda.setEstado(nuevoEstado);

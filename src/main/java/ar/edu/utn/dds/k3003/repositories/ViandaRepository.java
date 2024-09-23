@@ -126,6 +126,20 @@ public class ViandaRepository {
         return vianda;
     }
 
+    public void actualizar(Vianda vianda) {
+        EntityTransaction transaction = entityManager.getTransaction();
+        try {
+            transaction.begin();
+            entityManager.merge(vianda);
+            transaction.commit();
+        } catch (Exception e) {
+            if (transaction.isActive()) {
+                transaction.rollback();
+            }
+            throw e;
+        }
+    }
+
     public void borrarTodo() {
         entityManager.getTransaction().begin();
         try {
