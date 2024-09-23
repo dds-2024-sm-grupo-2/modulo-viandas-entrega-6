@@ -76,7 +76,7 @@ public class ViandaController {
 
     public void obtenerviancolab(Context ctx) throws Exception {
         try {
-            Long colaboradorId = Long.valueOf(ctx.queryParam("colaboradorId"));
+            Long colaboradorId = Long.valueOf(ctx.queryParam("colaboradorId")); //sacar long.valueof
             Integer mes = Integer.valueOf(ctx.queryParam("mes"));
             Integer anio = Integer.valueOf(ctx.queryParam("anio"));
 
