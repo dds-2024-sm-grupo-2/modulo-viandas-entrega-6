@@ -1,6 +1,7 @@
 package ar.edu.utn.dds.k3003.controllers;
 
 import ar.edu.utn.dds.k3003.app.Fachada;
+import ar.edu.utn.dds.k3003.facades.dtos.EstadoViandaEnum;
 import ar.edu.utn.dds.k3003.facades.dtos.RutaDTO;
 import ar.edu.utn.dds.k3003.facades.dtos.ViandaDTO;
 import io.javalin.http.Context;
@@ -45,6 +46,7 @@ public class ViandaController {
 
         try {
             boolean viandaVencida = fachada.evaluarVencimiento(qr);
+            fachada.modificarEstado(qr, EstadoViandaEnum.VENCIDA);
             resultado.put("resultado", viandaVencida);
             ctx.result(resultado.toString()).contentType("application/json");
         } catch (NoSuchElementException e) {
