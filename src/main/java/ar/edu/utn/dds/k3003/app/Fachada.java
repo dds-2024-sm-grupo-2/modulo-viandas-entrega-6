@@ -39,13 +39,18 @@ public class Fachada implements ar.edu.utn.dds.k3003.facades.FachadaViandas {
     @Override
     public ViandaDTO modificarEstado(String qr, EstadoViandaEnum nuevoEstado) {
         Vianda vianda = viandaRepository.findByQR(qr);
-        if (vianda != null) {
+        vianda.setEstado(nuevoEstado);
+        viandaRepository.save(vianda);
+        return viandaMapper.map(vianda);
+/**        if (vianda != null) {
             vianda.setEstado(nuevoEstado);
             viandaRepository.save(vianda);
             return viandaMapper.map(vianda);
         } else {
             throw new IllegalArgumentException("No se encontró la vianda con el código QR.");
         }
+ **/
+
     }
 
     @Override
