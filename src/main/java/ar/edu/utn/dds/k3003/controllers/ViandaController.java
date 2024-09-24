@@ -4,16 +4,20 @@ import ar.edu.utn.dds.k3003.app.Fachada;
 import ar.edu.utn.dds.k3003.facades.dtos.EstadoViandaEnum;
 import ar.edu.utn.dds.k3003.facades.dtos.RutaDTO;
 import ar.edu.utn.dds.k3003.facades.dtos.ViandaDTO;
+import ar.edu.utn.dds.k3003.model.Vianda;
+import ar.edu.utn.dds.k3003.repositories.ViandaRepository;
 import io.javalin.http.Context;
 import io.javalin.http.HttpStatus;
 import org.json.JSONObject;
 
 import java.util.List;
 import java.util.NoSuchElementException;
+import java.util.Objects;
 
 public class ViandaController {
 
     private final Fachada fachada;
+    public ViandaRepository viandaRepository;
 
     public ViandaController(Fachada fachada) {
         this.fachada = fachada;
@@ -47,8 +51,11 @@ public class ViandaController {
         try {
             boolean viandaVencida = fachada.evaluarVencimiento(qr);
             if (viandaVencida == Boolean.TRUE) {
-            ViandaDTO vianda = fachada.modificarEstado(qr, EstadoViandaEnum.VENCIDA);
+            ViandaDTO viandadto = fachada.modificarEstado(qr, EstadoViandaEnum.VENCIDA);
+            Vianda vianda = new Vianda(viandadto.getCodigoQR(), viandadto.getFechaElaboracion(), viandadto.getEstado(), viandadto.getColaboradorId(), viandadto.getHeladeraId());
             resultado.put("resultado", viandaVencida);
+            viandaRepository.save(vianda);
+            viandaRepository.actualizar(vianda);
             ctx.result(resultado.toString()).contentType("application/json");
             }
         } catch (NoSuchElementException e) {
@@ -75,24 +82,26 @@ public class ViandaController {
 
 
     public void obtenerviancolab(Context ctx) throws Exception {
-        try {
-            Long colaboradorId = Long.valueOf(ctx.queryParam("colaboradorId")); //sacar long.valueof
-            Integer mes = Integer.valueOf(ctx.queryParam("mes"));
-            Integer anio = Integer.valueOf(ctx.queryParam("anio"));
+//        try {
+            var colaboradorId = ctx.queryParamAsClass("colaboradorId", Long.class).get();
+            var mes = ctx.queryParamAsClass("mes", Integer.class).get();
+            var anio = ctx.queryParamAsClass("anio", Integer.class).get();
 
-            List<ViandaDTO> viandas = fachada.viandasDeColaborador(colaboradorId, mes, anio);
+            var viandas = fachada.viandasDeColaborador(colaboradorId, mes, anio);
 
-            if (viandas.isEmpty()) {
+            if (Objects.isNull(viandas) || viandas.isEmpty()) {
                 ctx.status(404).result("No se encontraron viandas para el colaborador y fecha especificados.");
-            } else {
-                ViandaDTO vianda = viandas.get(0); // Obtiene el primer elemento de la lista
-                ctx.json(vianda);
             }
-        } catch (NumberFormatException e) {
-            ctx.status(400).result("Los parametros de la solicitud deben ser numeros enteros.");
-        } catch (NoSuchElementException e) {
-            ctx.status(404).result("No se encontraron viandas para el colaborador y fecha especificados.");
-        }
+            ctx.json(viandas);
+            // else {
+//                ViandaDTO vianda = viandas.get(0); // Obtiene el primer elemento de la lista
+
+//            }
+//        } catch (NumberFormatException e) {
+//            ctx.status(400).result("Los parametros de la solicitud deben ser numeros enteros.");
+//        } catch (NoSuchElementException e) {
+//            ctx.status(404).result("No se encontraron viandas para el colaborador y fecha especificados.");
+//        }
     }
 
     public void eliminar(Context ctx) {
