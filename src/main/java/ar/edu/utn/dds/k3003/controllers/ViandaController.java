@@ -52,11 +52,7 @@ public class ViandaController {
             boolean viandaVencida = fachada.evaluarVencimiento(qr);
             if (viandaVencida == Boolean.TRUE) {
             ViandaDTO viandadto = fachada.modificarEstado(qr, EstadoViandaEnum.VENCIDA);
-            Vianda vianda = new Vianda(viandadto.getCodigoQR(), viandadto.getFechaElaboracion(), viandadto.getEstado(), viandadto.getColaboradorId(), viandadto.getHeladeraId());
             resultado.put("resultado", viandaVencida);
-            viandaRepository.save(vianda);
-            viandaRepository.actualizar(vianda);
-            ctx.result(resultado.toString()).contentType("application/json");
             }
         } catch (NoSuchElementException e) {
             resultado.put("error", "No se encontró la vianda con el código QR: " + qr);

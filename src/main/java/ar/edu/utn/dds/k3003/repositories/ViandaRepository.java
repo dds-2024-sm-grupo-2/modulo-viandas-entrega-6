@@ -55,6 +55,7 @@
 
 package ar.edu.utn.dds.k3003.repositories;
 
+import ar.edu.utn.dds.k3003.facades.dtos.EstadoViandaEnum;
 import ar.edu.utn.dds.k3003.model.Vianda;
 import lombok.Getter;
 import lombok.Setter;
@@ -126,7 +127,7 @@ public class ViandaRepository {
         return vianda;
     }
 
-    public void actualizar(Vianda vianda) {
+   /** public void actualizar(Vianda vianda) {
         EntityTransaction transaction = entityManager.getTransaction();
         try {
             transaction.begin();
@@ -138,6 +139,17 @@ public class ViandaRepository {
             }
             throw e;
         }
+    } **/
+
+    public Vianda modificarEstado(String qr, EstadoViandaEnum estado) {
+
+        entityManager.getTransaction().begin();
+        Vianda vianda = this.findByQR(qr);
+        vianda.setEstado(estado);
+        this.save(vianda);
+        entityManager.merge(vianda);
+        entityManager.getTransaction().commit();
+        return vianda;
     }
 
     public void borrarTodo() {
