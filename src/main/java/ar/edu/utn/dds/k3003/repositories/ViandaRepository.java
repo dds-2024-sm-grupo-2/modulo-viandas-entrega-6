@@ -77,7 +77,7 @@ public class ViandaRepository {
 
     public Vianda save(Vianda vianda) throws NoSuchElementException {
 
-        if (Objects.isNull(vianda.getId())) {
+        if (!Objects.isNull(vianda.getId())) {
             entityManager.getTransaction().begin();
             entityManager.persist(vianda);
             entityManager.getTransaction().commit();
