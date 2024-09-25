@@ -94,15 +94,6 @@ public class Fachada implements ar.edu.utn.dds.k3003.facades.FachadaViandas {
             throw new NoSuchElementException("No se encontró la vianda con el codigoo QR: " + qr);
         }
         List<TemperaturaDTO> temperaturas = heladerasProxy.obtenerTemperaturas(vianda.getHeladeraId());
-
-//        boolean vencida = false;
-//        for (TemperaturaDTO temperatura : temperaturas) {
-//            if (temperatura.getTemperatura() > 4) {
-//                vencida = true;
-//                break;
-//            }
-//        }
-//        return vencida;
         System.out.println(temperaturas.stream().map(temperaturaDTO -> temperaturaDTO.getTemperatura()));
         return temperaturas.stream().anyMatch(temperatura -> temperatura.getTemperatura() > 4);
     }

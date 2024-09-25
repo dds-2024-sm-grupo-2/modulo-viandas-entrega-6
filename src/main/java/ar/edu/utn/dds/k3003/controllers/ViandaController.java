@@ -77,6 +77,18 @@ public class ViandaController {
         }
     }
 
+    public void modificarEstadoVianda(Context ctx) {
+        try {
+            String qr = ctx.pathParam("qr");
+            EstadoViandaEnum estado = ctx.bodyAsClass(EstadoViandaEnum.class);
+
+            ViandaDTO viandaActualizada = fachada.modificarEstado(qr, estado);
+            ctx.json(viandaActualizada).status(200);
+        } catch (Exception e) {
+            ctx.status(400).result(e.getMessage());
+        }
+    }
+
 
     public void obtenerviancolab(Context ctx) throws Exception {
 //        try {

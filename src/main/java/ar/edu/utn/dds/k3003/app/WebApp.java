@@ -54,6 +54,8 @@ public class WebApp {
         app.get("/viandas/search/findByColaboradorIdAndAnioAndMes", viandaController::obtenerviancolab);
         app.delete("/viandas", viandaController::eliminar);
 
+        app.patch("/viandas/{qr}",viandaController::modificarEstadoVianda);
+
     }
 
     public static ObjectMapper createObjectMapper() {
