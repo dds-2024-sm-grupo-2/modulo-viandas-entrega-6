@@ -8,6 +8,14 @@ import com.fasterxml.jackson.databind.DeserializationFeature;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.SerializationFeature;
 import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
+import io.javalin.micrometer.MicrometerPlugin;
+import io.micrometer.core.instrument.binder.jvm.JvmGcMetrics;
+import io.micrometer.core.instrument.binder.jvm.JvmHeapPressureMetrics;
+import io.micrometer.core.instrument.binder.jvm.JvmMemoryMetrics;
+import io.micrometer.core.instrument.binder.system.FileDescriptorMetrics;
+import io.micrometer.core.instrument.binder.system.ProcessorMetrics;
+import io.micrometer.prometheusmetrics.PrometheusConfig;
+import io.micrometer.prometheusmetrics.PrometheusMeterRegistry;
 
 import javax.persistence.EntityManager;
 import javax.persistence.EntityManagerFactory;
@@ -19,29 +27,42 @@ import java.util.Map;
 import java.util.TimeZone;
 
 public class WebApp {
-//    public static EntityManagerFactory entityManagerFactory;
+
     public static void main(String[] args) {
 
         var env = System.getenv();
 
         // Variables de entorno
-//        var URL_VIANDAS = env.get("URL_VIANDAS");
 //        var URL_HELADERAS = env.get("URL_HELADERAS");
-//        var URL_COLABORADORES = env.get("URL_COLABORADORES");
-//        var URL_LOGISTICA = env.get("URL_LOGISTICA");
+        var TOKEN = env.get("TOKEN");
 
-//        startEntityManagerFactory(env);
-//        EntityManager entityManager = entityManagerFactory.createEntityManager();
+        final var registry = new PrometheusMeterRegistry(PrometheusConfig.DEFAULT);
+
+        registry.config().commonTags("app", "metrics-sample");
+
+        try (var jvmGcMetrics = new JvmGcMetrics();
+             var jvmHeapPressureMetrics = new JvmHeapPressureMetrics()) {
+            jvmGcMetrics.bindTo(registry);
+            jvmHeapPressureMetrics.bindTo(registry);
+        }
+        new JvmMemoryMetrics().bindTo(registry);
+        new ProcessorMetrics().bindTo(registry);
+        new FileDescriptorMetrics().bindTo(registry);
 
         var objectMapper = createObjectMapper();
         var fachada = new Fachada();
-
         // Obtengo el puerto de la variable de entorno, si no existe, uso el 8080
         var port = Integer.parseInt(env.getOrDefault("PORT", "8080"));
 
         fachada.setHeladerasProxy(new HeladerasProxy(objectMapper));
+
+        fachada.setRegistry(registry);
+        final var micrometerPlugin = new MicrometerPlugin(config -> config.registry = registry);
+
+
+
         var viandaController = new ViandaController(fachada);
-        var app = Javalin.create().start(port);
+        var app = Javalin.create(config -> { config.registerPlugin(micrometerPlugin); }).start(port);
 
         // Home
         app.get("/", ctx -> ctx.result("Modulo Viandas - Diseño de Sistemas K3003 - UTN FRBA"));
@@ -54,6 +75,15 @@ public class WebApp {
         app.get("/viandas/search/findByColaboradorIdAndAnioAndMes", viandaController::obtenerviancolab);
         app.delete("/viandas", viandaController::eliminar);
         app.patch("/viandas/{qr}/estado",viandaController::modificarEstadoVianda);
+        app.get("/metrics", ctx -> {
+            var auth = ctx.header("Authorization");
+            if (auth != null && auth.equals("Bearer " + TOKEN)) {
+                ctx.contentType("text/plain; version=0.0.4")
+                        .result(registry.scrape());
+            } else {
+                ctx.status(401).json("{\"error\": \"Unauthorized access\"}");
+            }
+        });
 
     }
 
@@ -68,19 +98,6 @@ public class WebApp {
         return objectMapper;
     }
 
-//    public static void startEntityManagerFactory(Map<String, String> env) {
-//        // https://stackoverflow.com/questions/8836834/read-environment-variables-in-persistence-xml-file
-//        Map<String, Object> configOverrides = new HashMap<String, Object>();
-//        String[] keys = new String[] { "javax.persistence.jdbc.url", "javax.persistence.jdbc.user",
-//                "javax.persistence.jdbc.driver"};
-//        for (String key : keys) {
-//            if (env.containsKey(key)) {
-//                String value = env.get(key);
-//                configOverrides.put(key, value);
-//            }
-//        }
-//        entityManagerFactory = Persistence.createEntityManagerFactory("db", configOverrides);
-//    }
 
 }
 

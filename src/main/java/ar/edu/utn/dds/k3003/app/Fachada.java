@@ -2,11 +2,14 @@ package ar.edu.utn.dds.k3003.app;
 
 import ar.edu.utn.dds.k3003.facades.FachadaHeladeras;
 import ar.edu.utn.dds.k3003.facades.dtos.EstadoViandaEnum;
+import ar.edu.utn.dds.k3003.facades.dtos.RutaDTO;
 import ar.edu.utn.dds.k3003.facades.dtos.TemperaturaDTO;
 import ar.edu.utn.dds.k3003.facades.dtos.ViandaDTO;
 import ar.edu.utn.dds.k3003.model.Vianda;
 import ar.edu.utn.dds.k3003.repositories.ViandaMapper;
 import ar.edu.utn.dds.k3003.repositories.ViandaRepository;
+import io.micrometer.core.instrument.Counter;
+import io.micrometer.prometheusmetrics.PrometheusMeterRegistry;
 
 import javax.persistence.EntityManager;
 import javax.persistence.EntityManagerFactory;
@@ -21,6 +24,10 @@ public class Fachada implements ar.edu.utn.dds.k3003.facades.FachadaViandas {
     private EntityManagerFactory entityManagerFactory;
     private EntityManager entityManager;
 
+    private Counter viandaVencidasCounter;
+    private Counter viandasCreadasCounter;
+    private PrometheusMeterRegistry registry;
+
     public Fachada() {
         this.entityManagerFactory = Persistence.createEntityManagerFactory("db");
         this.entityManager = entityManagerFactory.createEntityManager();
@@ -28,11 +35,24 @@ public class Fachada implements ar.edu.utn.dds.k3003.facades.FachadaViandas {
         this.viandaMapper = new ViandaMapper();
     }
 
+//    @Override
+//    public ViandaDTO agregar(ViandaDTO viandaDTO) {
+//        Vianda vianda = new Vianda(viandaDTO.getCodigoQR(), viandaDTO.getFechaElaboracion(), viandaDTO.getEstado(), viandaDTO.getColaboradorId(), viandaDTO.getHeladeraId());
+//        vianda = this.viandaRepository.save(vianda);
+//        return viandaMapper.map(vianda);
+//    }
+
     @Override
-    public ViandaDTO agregar(ViandaDTO viandaDTO) {
-        Vianda vianda = new Vianda(viandaDTO.getCodigoQR(), viandaDTO.getFechaElaboracion(), viandaDTO.getEstado(), viandaDTO.getColaboradorId(), viandaDTO.getHeladeraId());
-        vianda = this.viandaRepository.save(vianda);
-        return viandaMapper.map(vianda);
+    public ViandaDTO agregar(ViandaDTO viandaDTO) throws NoSuchElementException {
+        try {
+            Vianda vianda = new Vianda(viandaDTO.getCodigoQR(), viandaDTO.getFechaElaboracion(), viandaDTO.getEstado(), viandaDTO.getColaboradorId(), viandaDTO.getHeladeraId());
+            vianda = this.viandaRepository.save(vianda);
+            viandasCreadasCounter.increment();
+
+            return viandaMapper.map(vianda);
+        } catch (NoSuchElementException e) {
+            throw new NoSuchElementException(e.getLocalizedMessage());
+        }
     }
 
 
@@ -40,18 +60,17 @@ public class Fachada implements ar.edu.utn.dds.k3003.facades.FachadaViandas {
     public ViandaDTO modificarEstado(String qr, EstadoViandaEnum nuevoEstado) {
         Vianda vianda = viandaRepository.modificarEstado(qr, nuevoEstado);
         return new ViandaDTO(vianda.getCodigoQR(), vianda.getFechaElaboracion(), vianda.getEstado(), vianda.getColaboradorId(), vianda.getHeladeraId());
-//        return viandaMapper.map(vianda);
-
-/**        if (vianda != null) {
-            vianda.setEstado(nuevoEstado);
-            viandaRepository.save(vianda);
-            return viandaMapper.map(vianda);
-        } else {
-            throw new IllegalArgumentException("No se encontró la vianda con el código QR.");
-        }
- **/
+//      return viandaMapper.map(vianda);
     }
 
+//       if (vianda != null) {
+//            vianda.setEstado(nuevoEstado);
+//            viandaRepository.save(vianda);
+//            return viandaMapper.map(vianda);
+//        } else {
+//            throw new IllegalArgumentException("No se encontró la vianda con el código QR.");
+//        }
+//
     @Override
     public List<ViandaDTO> viandasDeColaborador(Long colaboradorId, Integer mes, Integer anio) throws NoSuchElementException {
         List<ViandaDTO> viandasDeColaborador = new ArrayList<>();
@@ -95,9 +114,12 @@ public class Fachada implements ar.edu.utn.dds.k3003.facades.FachadaViandas {
         }
         List<TemperaturaDTO> temperaturas = heladerasProxy.obtenerTemperaturas(vianda.getHeladeraId());
         System.out.println(temperaturas.stream().map(temperaturaDTO -> temperaturaDTO.getTemperatura()));
-        return temperaturas.stream().anyMatch(temperatura -> temperatura.getTemperatura() > 4);
-    }
 
+        viandaVencidasCounter.increment();
+
+        return temperaturas.stream().anyMatch(temperatura -> temperatura.getTemperatura() > 4);
+
+    }
 
     @Override
     public ViandaDTO modificarHeladera(String codigoQR, int nuevoIdHeladera) {
@@ -109,6 +131,17 @@ public class Fachada implements ar.edu.utn.dds.k3003.facades.FachadaViandas {
         Vianda viandaActualizada = viandaRepository.update(vianda);
 
         return viandaMapper.map(vianda);
+    }
+
+
+    public void setRegistry(PrometheusMeterRegistry registry) {
+        this.registry = registry;
+        this.viandaVencidasCounter = Counter.builder("app.viandas.vencidas")
+                .description("Numero de viandas vencidas")
+                .register(registry);
+        this.viandasCreadasCounter = Counter.builder("app.viandas.creadas")
+                .description("Numero de viandas creadas")
+                .register(registry);
     }
 
 
