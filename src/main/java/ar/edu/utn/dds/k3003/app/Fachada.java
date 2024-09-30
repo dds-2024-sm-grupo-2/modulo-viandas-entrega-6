@@ -59,8 +59,10 @@ public class Fachada implements ar.edu.utn.dds.k3003.facades.FachadaViandas {
     @Override
     public ViandaDTO modificarEstado(String qr, EstadoViandaEnum nuevoEstado) {
         Vianda vianda = viandaRepository.modificarEstado(qr, nuevoEstado);
+        if (nuevoEstado == EstadoViandaEnum.VENCIDA) {
+            viandaVencidasCounter.increment();
+        }
         return new ViandaDTO(vianda.getCodigoQR(), vianda.getFechaElaboracion(), vianda.getEstado(), vianda.getColaboradorId(), vianda.getHeladeraId());
-//      return viandaMapper.map(vianda);
     }
 
 //       if (vianda != null) {
@@ -114,8 +116,6 @@ public class Fachada implements ar.edu.utn.dds.k3003.facades.FachadaViandas {
         }
         List<TemperaturaDTO> temperaturas = heladerasProxy.obtenerTemperaturas(vianda.getHeladeraId());
         System.out.println(temperaturas.stream().map(temperaturaDTO -> temperaturaDTO.getTemperatura()));
-
-        viandaVencidasCounter.increment();
 
         return temperaturas.stream().anyMatch(temperatura -> temperatura.getTemperatura() > 4);
 
