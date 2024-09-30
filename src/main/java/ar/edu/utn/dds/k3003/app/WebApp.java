@@ -53,7 +53,6 @@ public class WebApp {
         app.patch("/viandas/{qr}",viandaController::modificarhl);
         app.get("/viandas/search/findByColaboradorIdAndAnioAndMes", viandaController::obtenerviancolab);
         app.delete("/viandas", viandaController::eliminar);
-
         app.patch("/viandas/{qr}/estado",viandaController::modificarEstadoVianda);
 
     }
