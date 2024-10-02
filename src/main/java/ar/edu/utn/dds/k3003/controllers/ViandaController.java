@@ -55,6 +55,11 @@ public class ViandaController {
             resultado.put("resultado", viandaVencida);
             ctx.result(resultado.toString()).contentType("application/json");
             }
+            else {
+                // Si la vianda no está vencida, devolver false
+                resultado.put("resultado", viandaVencida);
+                ctx.result(resultado.toString()).contentType("application/json");
+            }
         } catch (NoSuchElementException e) {
             resultado.put("error", "No se encontró la vianda con el código QR: " + qr);
             ctx.status(404).result(resultado.toString());
