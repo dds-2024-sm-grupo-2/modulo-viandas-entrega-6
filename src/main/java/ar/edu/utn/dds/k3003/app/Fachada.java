@@ -26,6 +26,7 @@ public class Fachada implements ar.edu.utn.dds.k3003.facades.FachadaViandas {
 
     private Counter viandaVencidasCounter;
     private Counter viandasCreadasCounter;
+    private Counter viandasDepositadasCounter;
     private PrometheusMeterRegistry registry;
 
     public Fachada() {
@@ -62,17 +63,12 @@ public class Fachada implements ar.edu.utn.dds.k3003.facades.FachadaViandas {
         if (nuevoEstado == EstadoViandaEnum.VENCIDA) {
             viandaVencidasCounter.increment();
         }
+        if (nuevoEstado == EstadoViandaEnum.DEPOSITADA) {
+            viandasDepositadasCounter.increment();
+        }
         return new ViandaDTO(vianda.getCodigoQR(), vianda.getFechaElaboracion(), vianda.getEstado(), vianda.getColaboradorId(), vianda.getHeladeraId());
     }
 
-//       if (vianda != null) {
-//            vianda.setEstado(nuevoEstado);
-//            viandaRepository.save(vianda);
-//            return viandaMapper.map(vianda);
-//        } else {
-//            throw new IllegalArgumentException("No se encontró la vianda con el código QR.");
-//        }
-//
     @Override
     public List<ViandaDTO> viandasDeColaborador(Long colaboradorId, Integer mes, Integer anio) throws NoSuchElementException {
         List<ViandaDTO> viandasDeColaborador = new ArrayList<>();
@@ -141,6 +137,9 @@ public class Fachada implements ar.edu.utn.dds.k3003.facades.FachadaViandas {
                 .register(registry);
         this.viandasCreadasCounter = Counter.builder("app.viandas.creadas")
                 .description("Numero de viandas creadas")
+                .register(registry);
+        this.viandasDepositadasCounter = Counter.builder("app.viandas.depositadas")
+                .description("Numero de viandas depositadas")
                 .register(registry);
     }
 
