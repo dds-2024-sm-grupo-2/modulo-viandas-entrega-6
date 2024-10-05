@@ -2,4 +2,6 @@
 # {Verger, Manuel Augusto}
 https://two024-tp-entrega-2-manuverger.onrender.com
 
+https://manuelverger.grafana.net/public-dashboards/8cb06c30f2324cb49f8ac58891d18c55
+
 Template para TP DDS 2024 - Entrega 2
