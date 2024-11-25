@@ -9,20 +9,32 @@
         <provider>org.hibernate.jpa.HibernatePersistenceProvider</provider>
         <class>ar.edu.utn.dds.k3003.model.Vianda</class>
 
+<!--        <properties>-->
+<!--            <property name="javax.persistence.jdbc.user" value="entrega6"/>-->
+<!--            <property name="javax.persistence.jdbc.password" value="9q54Pz9LtVVnRl8DGsqVUPTOFOj7Pd88" />-->
+<!--            <property name="javax.persistence.jdbc.driver" value="org.postgresql.Driver"/>-->
+<!--            <property name="javax.persistence.jdbc.url" value="jdbc:postgresql://dpg-ct1jl6ogph6c73bj7140-a.oregon-postgres.render.com/entrega6_vimn"/>-->
+
+<!--            <property name="hibernate.default_schema" value="public"/>-->
+<!--            <property name="hibernate.hbm2ddl.auto" value="create"/>-->
+<!--            <property name="hibernate.connection.pool_size" value="10" />-->
+<!--            <property name="hibernate.archive.autodetection" value="class" />-->
+<!--            <property name="hibernate.show_sql" value="true" />-->
+<!--            <property name="hibernate.format_sql" value="true" />-->
+<!--            <property name="use_sql_comments" value="true" />-->
+<!--            <property name="hibernate.dialect" value="org.hibernate.dialect.PostgreSQL95Dialect"/> &lt;!&ndash; DB Dialect &ndash;&gt;-->
+<!--        </properties>-->
         <properties>
-            <property name="javax.persistence.jdbc.user" value="entrega6"/>
-            <property name="javax.persistence.jdbc.password" value="9q54Pz9LtVVnRl8DGsqVUPTOFOj7Pd88" />
             <property name="javax.persistence.jdbc.driver" value="org.postgresql.Driver"/>
             <property name="javax.persistence.jdbc.url" value="jdbc:postgresql://dpg-ct1jl6ogph6c73bj7140-a.oregon-postgres.render.com/entrega6_vimn"/>
-
-            <property name="hibernate.default_schema" value="public"/>
-            <property name="hibernate.hbm2ddl.auto" value="create"/>
-            <property name="hibernate.connection.pool_size" value="10" />
-            <property name="hibernate.archive.autodetection" value="class" />
+            <property name="javax.persistence.jdbc.user" value="entrega6"/>
+            <property name="javax.persistence.jdbc.password" value="9q54Pz9LtVVnRl8DGsqVUPTOFOj7Pd88" />
+            <property name="hibernate.flushMode" value="FLUSH_AUTO" />
+            <property name="hibernate.hbm2ddl.auto" value="create" />
             <property name="hibernate.show_sql" value="true" />
             <property name="hibernate.format_sql" value="true" />
-            <property name="use_sql_comments" value="true" />
-            <property name="hibernate.dialect" value="org.hibernate.dialect.PostgreSQL95Dialect"/> <!-- DB Dialect -->
+            <property name="hibernate.use_sql_comments" value="true" />
+            <property name="hibernate.connection.pool_size" value="5" />
         </properties>
 
     </persistence-unit>

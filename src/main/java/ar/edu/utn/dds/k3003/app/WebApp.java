@@ -52,7 +52,7 @@ public class WebApp {
         var objectMapper = createObjectMapper();
         var fachada = new Fachada();
         // Obtengo el puerto de la variable de entorno, si no existe, uso el 8080
-        var port = Integer.parseInt(env.getOrDefault("PORT", "8080"));
+        var port = Integer.parseInt(env.getOrDefault("PORT", "8081"));
 
         fachada.setHeladerasProxy(new HeladerasProxy(objectMapper));
 
