@@ -22,7 +22,7 @@ public class HeladerasProxy implements FachadaHeladeras {
 
     public HeladerasProxy(ObjectMapper objectMapper) {
         var env = System.getenv();
-        this.endpoint = env.getOrDefault("URL_HELADERAS", "https://two024-tp-entrega-3-tomiballadares.onrender.com/");
+        this.endpoint = env.getOrDefault("URL_HELADERAS", "https://modulo-heladeras-entrega-5.onrender.com/heladeras");
 
         var retrofit = new Retrofit.Builder()
                 .baseUrl(this.endpoint)
