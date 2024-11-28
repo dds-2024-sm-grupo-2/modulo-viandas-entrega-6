@@ -26,9 +26,9 @@
 <!--        </properties>-->
         <properties>
             <property name="javax.persistence.jdbc.driver" value="org.postgresql.Driver"/>
-            <property name="javax.persistence.jdbc.url" value="jdbc:postgresql://dpg-ct288pdsvqrc73e61j10-a.oregon-postgres.render.com:5432/viandas_kp1a"/>
+            <property name="javax.persistence.jdbc.url" value="jdbc:postgresql://dpg-ct47hct6l47c73f7b7e0-a.oregon-postgres.render.com:5432/viandas_98k1"/>
             <property name="javax.persistence.jdbc.user" value="manuverger"/>
-            <property name="javax.persistence.jdbc.password" value="NCinnmTyRStN7lKf4wXKvUhAdrWiM30k" />
+            <property name="javax.persistence.jdbc.password" value="WWS4EqGN1Fl3SzGCG3yMoQT2w94lWnew" />
             <property name="hibernate.flushMode" value="FLUSH_AUTO" />
             <property name="hibernate.hbm2ddl.auto" value="create" />
             <property name="hibernate.show_sql" value="true" />
